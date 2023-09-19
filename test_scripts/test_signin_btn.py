@@ -16,7 +16,6 @@ class TestSignInBtn:
 
         obj = Register(self.driver)
 
-        #handling cookies
         self.logger.info("Handling Cookies")
         assert obj.cookies_btn(), "cannot be able to handle cookies"
 
