@@ -2,11 +2,11 @@ import pytest
 import os
 import json
 import logging
+import configparser
 import pytest
 from selenium import webdriver
 from datetime import datetime
 from inclusive_function.configure import Config
-
 
 
 def pytest_addoption(parser):
@@ -53,28 +53,6 @@ def launch_browser(request, get_browser):
 
 
 
-@pytest.fixture(scope="module")
-def logger():
-    # Create a logger
-    logger = logging.getLogger("my_logger")
-    logger.setLevel(logging.DEBUG)
-
-    # Create a file handler and set the log level
-    log_file = "../log_files/test.log"
-    file_handler = logging.FileHandler(log_file)
-    file_handler.setLevel(logging.DEBUG)
-
-    # Create a formatter and attach it to the file handler
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler.setFormatter(formatter)
-
-    # Add the file handler to the logger
-    logger.addHandler(file_handler)
-
-    yield logger
-
-    # Teardown code, if needed
-    file_handler.close()
 
 
 
@@ -92,42 +70,41 @@ def logger():
 
 
 
-
-# launch browser via json file
-@pytest.fixture()
-def get_json_file(request):
-    file_name = request.config.getoption("--f")
-    return file_name
-
-
-@pytest.fixture()
-def launch_browser_json(get_json_file):
-
-    file = open(get_json_file)
-    data = json.load(file)
-
-    browser = data["browser"]
-
-    if browser == "chrome":
-        credentials = webdriver.ChromeOptions()
-        credentials.browser_version = data["version"]
-        credentials.platform_name = data["platform"]
-        driver = webdriver.Chrome(options=credentials)
-
-    elif browser == "edge":
-        credentials = webdriver.EdgeOptions()
-        credentials.browser_version = data["version"]
-        credentials.platform_name = data["platform"]
-        driver = webdriver.Chrome(options=credentials)
-
-    driver.get("https://www.sony.co.in")
-    driver.maximize_window(Config.URL)
-    driver.implicitly_wait(20)
-
-    yield driver
-
-    driver.quit()
-
+# # launch browser via json file
+# @pytest.fixture()
+# def get_json_file(request):
+#     file_name = request.config.getoption("--f")
+#     return file_name
+#
+#
+# @pytest.fixture()
+# def launch_browser_json(get_json_file):
+#
+#     file = open(get_json_file)
+#     data = json.load(file)
+#
+#     browser = data["browser"]
+#
+#     if browser == "chrome":
+#         credentials = webdriver.ChromeOptions()
+#         credentials.browser_version = data["version"]
+#         credentials.platform_name = data["platform"]
+#         driver = webdriver.Chrome(options=credentials)
+#
+#     elif browser == "edge":
+#         credentials = webdriver.EdgeOptions()
+#         credentials.browser_version = data["version"]
+#         credentials.platform_name = data["platform"]
+#         driver = webdriver.Chrome(options=credentials)
+#
+#     driver.get("https://www.sony.co.in")
+#     driver.maximize_window(Config.URL)
+#     driver.implicitly_wait(20)
+#
+#     yield driver
+#
+#     driver.quit()
+#
 
 
 

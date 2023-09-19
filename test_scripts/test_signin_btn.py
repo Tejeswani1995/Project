@@ -1,26 +1,46 @@
 import pytest
 from src_code.register_page import Register
-from src_code.sign_in import SignIn
 from inclusive_function.configure import Config
 from inclusive_function.examination import Examination
-from time import sleep
+from inclusive_function.logging import Log
 
 
-@pytest.mark.usefixtures("launch_browser","logger")
+
+@pytest.mark.usefixtures("launch_browser")
 @pytest.mark.parametrize("username, password",Config.CREDENTIAL)
 class TestSignInBtn:
+    logger = Log.log()
 
-    def test_signinbtn(self, username, password, logger):
-        logger.debug("testing signin btn")
-        obj = SignIn(self.driver, username, password)
-        obj.cookies_btn(Config.COOKIES)
-        obj.profile_btn()
-        obj.sign_up_link()
-        obj.sign_in_btn()
-        obj.email_txt()
-        obj.continue_btn()
-        obj.pwd_txt()
-        obj.sign_in_for_product_btn()
+    def test_signinbtn(self, username, password):
+        self.logger.info("TESTING SIGNIN BUTTON")
+
+        obj = Register(self.driver)
+
+        self.logger.info("Handling Cookies")
+        assert obj.cookies_btn(), "cannot be able to handle cookies"
+
+        self.logger.info("click on profile btn button")
+        assert obj.profile_btn(), "profile button not working"
+
+        self.logger.info("click on signup link in home page")
+        assert obj.sign_up_link(),   "signup link not working"
+
+        self.logger.info("click on signin button in register page")
+        assert obj.sign_in_btn(), "signup button not working"
+
+        self.logger.info("providing email in email_txt")
+        assert obj.email_txt(username), "email text not working"
+
+        self.logger.info("click on continue_btn")
+        assert obj.continue_btn(), "continue btn not working"
+
+        self.logger.info("providing password in password_txt")
+        assert obj.pwd_txt(password), "password txt not working"
+
+        self.logger.info("testing signin btn in register page")
+        assert obj.sign_in_for_product_btn(), "signin btn not working"
+
+        self.logger.info("checking profile page ")
         result = obj.check_page(Examination.RESULT_AFTER_SIGN_IN)
         assert result, "page not load"
 
