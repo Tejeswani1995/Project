@@ -3,16 +3,39 @@ import os
 import json
 import logging
 import configparser
-import pytest
 from selenium import webdriver
 from datetime import datetime
 from inclusive_function.configure import Config
+
 
 
 def pytest_addoption(parser):
 
     parser.addoption("--browser", action="store", default=Config.BROWSER)
     parser.addoption("--f", action="store", default="../configration/config.json")
+
+
+
+
+
+config = configparser.RawConfigParser()
+config.read("..\\pytest.ini")
+
+
+
+@pytest.fixture(scope="class")
+def log(request):
+
+    logging.basicConfig(filename=config.get('pytest', 'log_file'), format=config.get('pytest', 'log_file_format'),
+                            datefmt=config.get('pytest', 'log_file_date_format'))
+    logger = logging.getLogger()
+    logger.setLevel(config.get('pytest', 'log_file_level'))
+
+    request.cls.logger = logger
+    return request.cls.logger
+
+
+
 
 # fixture to launch browser via command prompt
 
@@ -23,14 +46,18 @@ def get_browser(request):
 
 
 @pytest.fixture(scope="class")
-def launch_browser(request, get_browser):
+@pytest.mark.usefixtures("log")
+def launch_browser(request, get_browser, log):
+
     if get_browser == "chrome" :
+        log.info("launching chrome browser")
         opt = webdriver.ChromeOptions()
         opt.add_experimental_option("detach", True)
         driver = webdriver.Chrome(options=opt)
 
 
-    elif get_browser == "edge" :
+    elif get_browser == "edge":
+        log.info("launching  edge browser")
         opt = webdriver.EdgeOptions()
         opt.add_experimental_option("detach", True)
         driver = webdriver.Edge()
@@ -49,7 +76,6 @@ def launch_browser(request, get_browser):
     yield request.cls.driver
 
     driver.quit()
-
 
 
 

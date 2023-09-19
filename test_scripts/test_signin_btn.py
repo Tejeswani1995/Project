@@ -2,19 +2,18 @@ import pytest
 from src_code.register_page import Register
 from inclusive_function.configure import Config
 from inclusive_function.examination import Examination
-from inclusive_function.logging import Log
 
 
 
-@pytest.mark.usefixtures("launch_browser")
+
+@pytest.mark.usefixtures("launch_browser", "log")
 @pytest.mark.parametrize("username, password",Config.CREDENTIAL)
 class TestSignInBtn:
-    logger = Log.log()
 
     def test_signinbtn(self, username, password):
         self.logger.info("TESTING SIGNIN BUTTON")
 
-        obj = Register(self.driver)
+        obj = Register(self.driver, self.logger)
 
         self.logger.info("Handling Cookies")
         assert obj.cookies_btn(), "cannot be able to handle cookies"

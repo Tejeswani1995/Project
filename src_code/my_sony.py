@@ -8,17 +8,18 @@ class MySony(GenericActions):
     sign_in_link_locator = ("xpath", '//div[contains(@class,"SignUp ")]')
 
 
-    def __init__(self, driver):
+    def __init__(self, driver,log):
         self.driver = driver
         super().__init__(driver)
+        self.log = log
 
 
     def cookies_btn(self):
         try:
             self.click_on_element(self.__class__.cookies_accept_locator)
             return True
-
         except Exception:
+            self.log.info("cookies failed")
             return False
 
     def profile_btn(self):
@@ -26,6 +27,7 @@ class MySony(GenericActions):
             self.click_on_element(self.__class__.my_sony_icon_locator)
             return True
         except Exception:
+            self.log.info("profile btn failed")
             return False
 
 
@@ -34,6 +36,7 @@ class MySony(GenericActions):
             self.click_on_element(self.__class__.sign_in_link_locator)
             return True
         except Exception:
+            self.log.info("sign up link failed")
             return False
 
 
